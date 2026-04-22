@@ -16,7 +16,7 @@ const PreviewPanel = ({thumbnail,isLoading,aspectRatio}:{thumbnail:IThumbnail | 
      }
 
   return (
-    <div className="relative mx-auto w-full max-w-2xl ">\
+    <div className="relative mx-auto w-full max-w-2xl ">
       <div className={`relative overflow-hidden ${aspectClasses[aspectRatio]}` }>
         {/* Loading state */}
         {isLoading && (
