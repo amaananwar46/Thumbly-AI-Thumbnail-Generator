@@ -4,9 +4,12 @@ import { dummyThumbnails, type IThumbnail } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { ArrowUpRightIcon, DownloadIcon, TrashIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const MyGeneration = () => {
+  const {isLoggedIn} = useAuth()  // video 5:45
   const navigate = useNavigate();
+
   const aspectRatioClassMap: Record<string, string> = {
     "16:9": "aspect-video",
     "1:1": "aspect-square",

@@ -158,7 +158,7 @@ export const generateThumbnail = async (req: Request, res: Response) => {
     fs.unlinkSync(filePath);
   } catch (error: any) {
     console.log(error);
-    res.status(500).json({ message: "error.message" });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -167,15 +167,14 @@ export const generateThumbnail = async (req: Request, res: Response) => {
 
 //controller for delete thumbnail
 export const deleteThumbnail = async (req: Request, res: Response) => {
-try { 
-    const {id} = req.params;
-    const {userId} = req.session;
+  try {
+    const { id } = req.params;
+    const { userId } = req.session;
 
-    await Thumbnail.findByIdAndDelete({_id:id,userId})
-    res.json({message:'Thumbnail deleted successfully'})
-    
-} catch (error:any) {
-     console.log(error);
-    res.status(500).json({ message: "error.message" });
-}
-}
+    await Thumbnail.findByIdAndDelete({ _id: id, userId });
+    res.json({ message: "Thumbnail deleted successfully" });
+  } catch (error: any) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
+};

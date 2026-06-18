@@ -12,7 +12,12 @@ const PreviewPanel = ({thumbnail,isLoading,aspectRatio}:{thumbnail:IThumbnail | 
 
      const onDownload = ()=>{
         if(!thumbnail?.image_url) return;
-        window.open(thumbnail.image_url,"_blank")
+        // window.open(thumbnail.image_url,"_blank")
+        const link = document.createElement('a')
+        link.href = thumbnail?.image_url.replace('/upload','upload/fl_attechment')
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
      }
 
   return (
