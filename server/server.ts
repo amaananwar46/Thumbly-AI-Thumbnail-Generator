@@ -31,7 +31,7 @@ app.use(session({
     cookie:{maxAge:1000 * 60 * 60 * 24 * 7},// 7 days
     store:MongoStore.create({
         mongoUrl:process.env.MONGODB_URI as string,
-        CollectionName:'session'
+        collectionName:'session'
     })
 }))
 app.use(express.json());
