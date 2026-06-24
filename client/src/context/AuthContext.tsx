@@ -2,23 +2,24 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import type { IUser } from "../assets/assets";
 import api from "../config/api";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 
 
 interface AuthContextProps {
-  isLoggedIn: boolean;
-  setIsLoggedIn: (isLoggedIn: boolean) => void;
-  user: IUser | null;
-  setUser: (user: IUser | null) => void;
-  login: (user: { email: string; password: string }) => Promise<void>;
-  signUp: (user: { name: string; email: string; password: string }) => Promise<void>;
-  logout: () => Promise<void>;
+    isLoggedIn: boolean;
+    setIsLoggedIn: (isLoggedIn: boolean) => void;
+    user: IUser | null;
+    setUser: (user: IUser | null) => void;
+    login: (user: { email: string; password: string }) => Promise<void>;
+    signUp: (user: { name: string; email: string; password: string }) => Promise<void>;
+    logout: () => Promise<void>;
 }
 
 
 const AuthContext = createContext<AuthContextProps>({
     isLoggedIn: false,
-  setIsLoggedIn: () => {},
+    setIsLoggedIn: () => {},
   user: null,
   setUser: () => {},
   login: async () => {},
@@ -29,14 +30,14 @@ const AuthContext = createContext<AuthContextProps>({
 
 
 export const AuthProvider = ({children}:{ children: ReactNode})=>{
-   
- 
+    
+    
     const [user,setUser]=useState<IUser | null>(null)
     const [isLoggedIn,setIsLoggedIn]=useState<boolean>(false)
     
     const signUp = async({name,email,password}:{name:string, email: string; password: string})=>{
         try {
-
+            
             const {data} = await api.post("/api/auth/register",{name,email,password});
             if(data.user){
                 setUser(data.user as IUser)
@@ -46,24 +47,35 @@ export const AuthProvider = ({children}:{ children: ReactNode})=>{
         } catch (error:any) {
             console.log(error)
         }
-         
-    }
         
-    
-    const login = async({email,password}:{ email: string; password: string})=>{
-         try {
-
-            const {data} = await api.post("/api/auth/login",{email,password});
-            if(data.user){
-                setUser(data.user as IUser)
-                setIsLoggedIn(true)
-            }
-            toast.success(data.message)
-        } catch (error:any) {
-            console.log(error)
-        }
-         
     }
+    
+    
+    const navigate = useNavigate();
+    const login = async ({ email, password }: { email: string; password: string }) => {
+    try {
+
+        const { data } = await api.post("/api/auth/login", {
+            email,
+            password
+        });
+
+        if (data.user) {
+            setUser(data.user as IUser);
+            setIsLoggedIn(true);
+        }
+
+        toast.success(data.message);
+
+    } catch (error: any) {
+        
+
+        toast.error(
+            error?.response?.data?.message ||
+            "Invalid email or password"
+        );
+    }
+}
 
     
     const logout = async()=>{
@@ -74,7 +86,9 @@ export const AuthProvider = ({children}:{ children: ReactNode})=>{
                 setUser(null)
                 setIsLoggedIn(false)
             
-            toast.success(data.message)
+            toast.success(data.message);
+                navigate("/");
+
         } catch (error:any) {
             console.log(error)
         }

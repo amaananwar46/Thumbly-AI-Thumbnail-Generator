@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const MyGeneration = () => {
-  const {isLoggedIn} = useAuth()  // video 5:45
+  const {isLoggedIn} = useAuth()  
   const navigate = useNavigate();
 
   const aspectRatioClassMap: Record<string, string> = {
@@ -106,9 +106,20 @@ const MyGeneration = () => {
                   </div>
                   {/* content */}
                   <div className="p-4 space-y-2">
-                    <h3 className="text-sm font-semibold text-zinc-100 line-clamp-2">
+                    {/* <h3 className="text-sm font-semibold text-zinc-100 line-clamp-2">
                       {thumb.title}
-                    </h3>
+                    </h3> */}
+                    <div className="flex items-center gap-2 flex-wrap">
+  <h3 className="text-sm font-semibold text-zinc-100 line-clamp-2">
+    {thumb.title}
+  </h3>
+
+  {dummyThumbnails.some(item => item._id === thumb._id) && (
+    <span className="px-2 py-0.5 text-[10px] font-medium bg-red-600 text-white rounded-full">
+      Dummy Thumbnail
+    </span>
+  )}
+</div>
                     <div className="flex flex-wrap gap-2 text-xs text-zinc-400">
                       <span className="px-2 py-0.5 rounded bg-white/8">
                         {thumb.style}

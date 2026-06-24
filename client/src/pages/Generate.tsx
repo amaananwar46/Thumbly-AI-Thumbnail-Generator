@@ -7,7 +7,7 @@ import StyleSelector from "../components/StyleSelector";
 import ColorSchemeSelector from "../components/ColorSchemeSelector";
 import PreviewPanel from "../components/PreviewPanel";
 import { useAuth } from "../context/AuthContext";
-import toast from "react-hot-toast/headless";
+import toast from "react-hot-toast";
 import api from "../config/api";
 
 
@@ -29,47 +29,79 @@ const Generate = () => {
 
     const [styleDropdownOpen,setStyleDropdownOpen] = useState(false)
 
-    const handleGenerate = async ()=>{
-      if(isLoggedIn)return toast.error('Please login to generate thumbnails')
-        if(!title.trim()) return toast.error('title is required')
-          setLoading(true)
-        const api_payload = {
-          title,
-          prompt: additionalDetails,
-          style,
-          aspect_ratio:aspectRatio,
-          color_scheme: colorSchemeId,
-          text_overlay:true
-        }
-        const {data} = await api.post('/api/thumbnail/generate',api_payload);
-        if(data.thumbnail){
-          navigate('/generate/'+data.thumbnail._id);
-          toast.success(data.message)
-        }
+
+    const handleGenerate = async () => {
+      if (!title.trim()) {
+        toast.error('Title is required');
+        return;
+      }
+
+  if (!isLoggedIn) {
+    toast.error('Please login to generate thumbnails');
+    return;
+  }
 
 
+  try {
+    setLoading(true);
 
+    const api_payload = {
+      title,
+      prompt: additionalDetails,
+      style,
+      aspect_ratio: aspectRatio,
+      color_scheme: colorSchemeId,
+      text_overlay: true
+    };
+
+    const { data } = await api.post(
+      '/api/thumbnail/generate',
+      api_payload
+    );
+
+    if (data.thumbnail) {
+      navigate('/generate/' + data.thumbnail._id);
+      toast.success(data.message);
     }
 
+  } catch (error: any) {
+    console.log(error);
+
+    toast.error(
+      // error?.response?.data?.message ||
+      // error?.message ||
+      // 'Something went wrong'
+       
+    "Thumbnail generation service is temporarily unavailable. Please try again later."
+  
+      
+    );
+
+  } finally {
+    setLoading(false);
+  }
+};
 
     const fetchThumbnail = async ()=>{
-          // if(id){      // dummy thumbnial
-          //   const thumbnail : any = dummyThumbnails.find((thumbnail)=>thumbnail._id === id )
-          //   setThumbnail(thumbnail)
-          //   setAdditionalDetails(thumbnail.user_prompt)
-          //   setTitle(thumbnail.title)
-          //   setColorSchemeId(thumbnail.color_scheme)
-          //   setAspectRatio(thumbnail.aspect_ratio)
-          //   setStyle(thumbnail.style)
-          //   setLoading(false)
-          // }
+          if(id){      // dummy thumbnial
+            const thumbnail : any = dummyThumbnails.find((thumbnail)=>thumbnail._id === id )
+            setThumbnail(thumbnail)
+            setAdditionalDetails(thumbnail.user_prompt)
+            setTitle(thumbnail.title)
+            setColorSchemeId(thumbnail.color_scheme)
+            setAspectRatio(thumbnail.aspect_ratio)
+            setStyle(thumbnail.style)
+            setLoading(false)
+            return 
+          }  
 
           try {
             const {data} = await api.get(`/api/user/thumbnail/${id}`)
+            console.log("Thumbnail Data:", data.thumbnail); //------------------------------------------------------
             setThumbnail(data?.thumbnail as IThumbnail)
             setLoading(!data?.thumbnail?.image_url)
-            setAdditionalDetails(data?.thumbnail?.user_prompt)
-            setTitle(data?.thumbnail?.title)
+            setAdditionalDetails(data?.thumbnail?.user_prompt || '')
+            setTitle(data?.thumbnail?.title || '')
             setColorSchemeId(data?.thumbnail?.color_scheme)
             setAspectRatio(data?.thumbnail?.aspect_ratio)
             setStyle(data?.thumbnail?.style)
@@ -84,12 +116,12 @@ const Generate = () => {
       if(isLoggedIn && id){
         fetchThumbnail()
       }
-      if(id && loading && isLoggedIn){
-        const interval = setInterval(()=>{
-          fetchThumbnail()
-        },5000)
-        return ()=>clearInterval(interval)
-      }
+      // if(id && loading && isLoggedIn){
+      //   const interval = setInterval(()=>{
+      //     fetchThumbnail()
+      //   },5000)
+      //   return ()=>clearInterval(interval)
+      // }
     },[id,loading,isLoggedIn])
 
 

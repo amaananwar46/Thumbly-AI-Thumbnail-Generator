@@ -106,6 +106,7 @@ export default function Navbar() {
           <button onClick={()=>{setIsOpen(false);logout()}}>
             Logout
           </button>
+    
           :  <Link onClick={() => setIsOpen(false)} to="/login">
           Login
         </Link>
