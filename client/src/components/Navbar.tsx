@@ -93,7 +93,7 @@ export default function Navbar() {
           isLoggedIn ? <Link onClick={() => setIsOpen(false)} to="/my-generation">
           My Generations
         </Link>
-        : <Link onClick={() => setIsOpen(false)} to="#">
+        : <Link onClick={() => setIsOpen(false)} to="/about">
           About 
         </Link>
         }
@@ -103,7 +103,8 @@ export default function Navbar() {
         </Link>
         {
           isLoggedIn ?
-          <button onClick={()=>{setIsOpen(false);logout()}}>
+          <button onClick={()=>{setIsOpen(false);logout();    navigate("/");
+}}>
             Logout
           </button>
     
